@@ -2,7 +2,7 @@
 
 namespace App\Components\Request;
 
-class Request
+class Request implements RequestInterface
 {
     private $requestMethod;
     private $uri;

@@ -1,0 +1,11 @@
+routes: %%
+  test: $$
+    name: test
+    path: /test/first/route
+    controller: Test
+    action: first
+  test2:
+    name: test2
+    path: /test/second/route
+    controller: Test
+    action: second

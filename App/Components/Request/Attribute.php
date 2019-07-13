@@ -2,7 +2,7 @@
 
 namespace App\Components\Request;
 
-class Attribute
+class Attribute implements AttributeInterface
 {
     private $type;
     private $data;
@@ -13,11 +13,18 @@ class Attribute
         $this->type = $type;
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     public function get($key)
     {
         return $this->data[$key];
     }
 
+    /**
+     * @return array
+     */
     public function all()
     {
         return $this->data;
