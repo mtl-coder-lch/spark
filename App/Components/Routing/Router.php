@@ -3,6 +3,7 @@
 namespace App\Components\Routing;
 
 use App\Components\Request\Request;
+use Exception;
 
 class Router
 {
@@ -27,9 +28,13 @@ class Router
         $this->request = $request;
     }
 
+    /**
+     * @return Route|mixed
+     * @throws Exception
+     */
     public function getMatchedRoute()
     {
         $this->routes = $this->routesParser->parse()->getRoutes();
-        return $this->matchedRoute = $this->routeMatcher->resolve($this->routes);
+        return $this->matchedRoute = $this->routeMatcher->match($this->routes);
     }
 }

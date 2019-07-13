@@ -20,7 +20,7 @@ class RouteMatcher
      * @return Route|mixed
      * @throws Exception
      */
-    public function resolve(Collection $routes)
+    public function match(Collection $routes)
     {
         $partsRequest = explode('/', $this->request->getUriWithRemovedQueryString());
         array_shift($partsRequest);
