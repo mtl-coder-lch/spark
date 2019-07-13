@@ -6,6 +6,6 @@ routes:
     action: second
   test:
     name: test
-    path: /test/{first}/route
+    path: /test/{first}/route/{second}
     controller: Test
     action: first

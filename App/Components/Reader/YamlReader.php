@@ -24,7 +24,6 @@ class YamlReader
             throw new Exception("File $file is not valid");
         }
 
-
         $this->routes = [];
 
         while(!feof($file))
@@ -66,7 +65,11 @@ class YamlReader
     private function getValueByLine($line)
     {
         preg_match('/:(?<value>.+)/', $line, $matches);
-        return trim($matches['value']);
+        if(isset($matches['value']))
+        {
+            return trim($matches['value']);
+        }
+        return '';
     }
 
     private function countNumberOfSpaces($line)

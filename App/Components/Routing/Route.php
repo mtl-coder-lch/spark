@@ -8,6 +8,7 @@ class Route
     private $path;
     private $controller;
     private $action;
+    private $params;
 
     public function __construct($name, $path, $controller, $action)
     {
@@ -79,5 +80,21 @@ class Route
     public function setAction($action)
     {
         $this->action = $action;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param mixed $params
+     */
+    public function setParams($params): void
+    {
+        $this->params = $params;
     }
 }

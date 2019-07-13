@@ -28,18 +28,24 @@ class RouteMatcher
 
             $partsRoute = explode('/', $route->getPath());
             array_shift($partsRoute);
+            $params = [];
 
             foreach ($partsRoute as $keyPartRoute => $partRoute)
             {
-                if(preg_match('/\{.+\}/',$partRoute) || $partsRequest[$keyPartRoute] === $partRoute)
+                if(preg_match('/\{.+\}/',$partRoute))
+                {
+                    $params[] = $partsRequest[$keyPartRoute];
+                    $matches[] = true;
+                }
+                elseif ($partsRequest[$keyPartRoute] === $partRoute)
                 {
                     $matches[] = true;
                 }
             }
 
-
             if(count($matches) === count($partsRoute))
             {
+                $this->request->setParams($params);
                 return $route;
             }
         }

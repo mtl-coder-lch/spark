@@ -7,6 +7,17 @@ use ReflectionException;
 
 class ContainerDi
 {
+    private static $instances;
+
+    public static function get($key)
+    {
+        return self::$instances[$key];
+    }
+
+    public function list()
+    {
+        return self::$instances;
+    }
 
     /**
      * @param $className
@@ -15,21 +26,28 @@ class ContainerDi
      */
     public function resolve($className)
     {
-        $class = new ReflectionClass($className);
+        if(isset(self::$instances[$className]))
+        {
+            return self::$instances[$className];
+        }
+
+        $class =  new ReflectionClass($className);
 
         $constructor = $class->getConstructor();
 
-        if(!$constructor)
+        if(!$constructor || !$constructor->getParameters())
         {
-            return new $className;
+            if(!isset(self::$instances[$className]))
+            {
+                return self::$instances[$className] = new $className;
+            }
+            else
+            {
+                return self::$instances[$className];
+            }
         }
 
         $parameters = $constructor->getParameters();
-
-        if(!$parameters)
-        {
-            return new $className;
-        }
 
         $instances = [];
 

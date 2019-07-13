@@ -8,15 +8,14 @@ class Request implements RequestInterface
     private $uri;
     private $userAgent;
     private $serverName;
-    private $acceptCharset;
     private $acceptEncoding;
     private $host;
-    private $referer;
-    public $query;
-    public $post;
     private $body;
     private $cookies;
     private $files;
+    private $params;
+    public $query;
+    public $post;
 
     public function __construct()
     {
@@ -24,10 +23,8 @@ class Request implements RequestInterface
         $this->uri = $_SERVER['REQUEST_URI'];
         $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
         $this->serverName = $_SERVER['SERVER_NAME'];
-        $this->acceptCharset = $_SERVER['HTTP_ACCEPT_CHARSET'];
         $this->acceptEncoding = $_SERVER['HTTP_ACCEPT_ENCODING'];
         $this->host = $_SERVER['HTTP_HOST'];
-        $this->referer = $_SERVER['HTTP_REFERER'];
         $this->query = new Attribute('query', $_GET);
         $this->post = new Attribute('post', $_POST);
         $this->cookies = new Attribute('cookies', $_COOKIE);
@@ -129,6 +126,22 @@ class Request implements RequestInterface
     public function getCookies()
     {
         return $this->cookies;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param mixed $params
+     */
+    public function setParams($params): void
+    {
+        $this->params = $params;
     }
 
     public function getUriWithRemovedQueryString()

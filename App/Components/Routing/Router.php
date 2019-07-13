@@ -2,7 +2,9 @@
 
 namespace App\Components\Routing;
 
+use App\Components\Container\ContainerDi;
 use App\Components\Request\Request;
+use ReflectionClass;
 
 class Router
 {
@@ -27,19 +29,9 @@ class Router
         $this->request = $request;
     }
 
-    public function init()
+    public function getMatchedRoute()
     {
         $this->routes = $this->routesParser->parse()->getRoutes();
-        $this->matchedRoute = $this->routeMatcher->resolve($this->routes);
-        $this->executeController();
-    }
-
-    public function executeController()
-    {
-        $controllerName = $this->matchedRoute->getController().'Controller';
-        $namespace = 'App\\Components\\Controller\\';
-        $namespacedController = $namespace . $controllerName;
-        $action = $this->matchedRoute->getAction();
-        (new $namespacedController)->$action();
+        return $this->matchedRoute = $this->routeMatcher->resolve($this->routes);
     }
 }

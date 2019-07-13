@@ -4,9 +4,12 @@ namespace App\Components\Controller;
 
 class TestController
 {
-    public function first()
+    use Controller;
+
+    public function first($first, $second)
     {
-        echo 'first';
+        var_dump($this->request);
+        echo $first. ' '. $second;
     }
 
     public function second()

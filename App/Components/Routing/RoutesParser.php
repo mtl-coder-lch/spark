@@ -15,6 +15,7 @@ class RoutesParser
     private $routes;
     private $request;
     private $data;
+    private $reader;
 
     /**
      * RoutesParser constructor.
@@ -26,6 +27,7 @@ class RoutesParser
     {
         $this->request = $request;
         $this->data = $yamlReader->read(self::ROUTES_FILE_PATH);
+        $this->reader = $yamlReader;
     }
 
     public function parse()
