@@ -3,33 +3,43 @@
 namespace App\Components\Routing;
 
 use App\Components\Request\Request;
-use App\Components\Reader\YamlReader;
 
 class Router
 {
     const ROUTES_FILE_PATH = __DIR__ . '/../../routes.yml';
 
+    private $routes;
+    private $matchedRoute;
+    private $routesParser;
+    private $routeMatcher;
     private $request;
 
     /**
      * Router constructor.
      * @param Request $request
-     * @throws \Exception
+     * @param RoutesParser $routesParser
+     * @param RouteMatcher $routeMatcher
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, RoutesParser $routesParser, RouteMatcher $routeMatcher)
     {
+        $this->routesParser = $routesParser;
+        $this->routeMatcher = $routeMatcher;
         $this->request = $request;
-        $this->analyzeUri();
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function analyzeUri()
+    public function init()
     {
-        $yamlReader = new YamlReader();
-        $data = $yamlReader->read(self::ROUTES_FILE_PATH);
-        $routesParser = new RoutesParser();
-        $routes = $routesParser->parse($data)->getRoutes();
+        $this->routes = $this->routesParser->parse()->getRoutes();
+        $this->matchedRoute = $this->routeMatcher->resolve($this->routes);
+        $this->executeController();
+    }
+
+    public function executeController()
+    {
+        $controllerName = $this->matchedRoute->getController().'Controller';
+        $namespace = 'App\\Components\\Controller\\';
+        $namespacedController = $namespace . $controllerName;
+        $action = $this->matchedRoute->getAction();
+        (new $namespacedController)->$action();
     }
 }

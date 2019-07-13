@@ -2,18 +2,38 @@
 
 namespace App\Components\Routing;
 
+use App\Components\Collection\Collection;
 use App\Components\Reader\Line;
+use App\Components\Reader\YamlReader;
+use App\Components\Request\Request;
+use Exception;
 
 class RoutesParser
 {
-    private $routes;
+    const ROUTES_FILE_PATH = __DIR__ . '/../../routes.yml';
 
-    public function parse($lines)
+    private $routes;
+    private $request;
+    private $data;
+
+    /**
+     * RoutesParser constructor.
+     * @param Request $request
+     * @param YamlReader $yamlReader
+     * @throws Exception
+     */
+    public function __construct(Request $request, YamlReader $yamlReader)
+    {
+        $this->request = $request;
+        $this->data = $yamlReader->read(self::ROUTES_FILE_PATH);
+    }
+
+    public function parse()
     {
         /**
          * @var $line Line
          */
-        foreach ($lines as $line)
+        foreach ($this->data as $line)
         {
             if($line->getNumberOfSpaces() == 2)
             {
@@ -37,6 +57,12 @@ class RoutesParser
      */
     public function getRoutes()
     {
-        return $this->routes;
+        $routesObj = [];
+
+        foreach ($this->routes as $route)
+        {
+            $routesObj[] = new Route($route['name'], $route['path'], $route['controller'], $route['action']);
+        }
+        return new Collection($routesObj);
     }
 }
