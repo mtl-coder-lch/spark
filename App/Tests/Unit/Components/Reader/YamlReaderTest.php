@@ -11,6 +11,9 @@ class YamlReaderTest extends TestCase
     const FILE_VALID = __DIR__ . '/files/routes_valid.yml';
     const FILE_NOT_VALID = __DIR__ . '/files/routes_not_valid.yml';
 
+    /**
+     * @throws Exception
+     */
     public function testItCanReadFile()
     {
         $yamlReader = new YamlReader();
@@ -19,6 +22,9 @@ class YamlReaderTest extends TestCase
         $this->assertEquals('test', $data[1]->getKey());
     }
 
+    /**
+     * @throws Exception
+     */
     public function testThrowsExceptionWhenContainsSpecialCharacter()
     {
         $this->expectException(Exception::class);
@@ -26,7 +32,9 @@ class YamlReaderTest extends TestCase
         $yamlReader->read(self::FILE_NOT_VALID);
     }
 
-
+    /**
+     * @throws Exception
+     */
     public function testThrowsExceptionIfFileDoesNotExist()
     {
         $this->expectException(Exception::class);

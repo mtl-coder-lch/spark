@@ -2,7 +2,7 @@
 
 namespace App\Components\Routing;
 
-use App\Reader\Line;
+use App\Components\Reader\Line;
 
 class RoutesParser
 {
