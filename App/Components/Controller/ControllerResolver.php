@@ -9,6 +9,11 @@ use ReflectionClass;
 
 class ControllerResolver
 {
+    /**
+     * @param Route $matchedRoute
+     * @param Request $request
+     * @throws \ReflectionException
+     */
     public function resolve(Route $matchedRoute, Request $request)
     {
         $controllerName = $matchedRoute->getController().'Controller';

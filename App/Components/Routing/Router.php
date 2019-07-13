@@ -2,9 +2,7 @@
 
 namespace App\Components\Routing;
 
-use App\Components\Container\ContainerDi;
 use App\Components\Request\Request;
-use ReflectionClass;
 
 class Router
 {
