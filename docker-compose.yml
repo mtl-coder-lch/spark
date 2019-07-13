@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  spark:
+    build: ./docker
+    container_name: spark
+    ports:
+    - "80:80"
+    volumes:
+    - ./:/home/www/spark
+
+volumes:
+  redis-data: {}
+  mysql-data: {}
+
+networks:
+  default:
+    external:
+      name: spark-net
