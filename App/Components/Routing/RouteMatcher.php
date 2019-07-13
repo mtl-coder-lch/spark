@@ -4,6 +4,7 @@ namespace App\Components\Routing;
 
 use App\Components\Collection\Collection;
 use App\Components\Request\Request;
+use Exception;
 
 class RouteMatcher
 {
@@ -14,6 +15,11 @@ class RouteMatcher
         $this->request = $request;
     }
 
+    /**
+     * @param Collection $routes
+     * @return Route|mixed
+     * @throws Exception
+     */
     public function resolve(Collection $routes)
     {
         $partsRequest = explode('/', $this->request->getUriWithRemovedQueryString());
@@ -32,12 +38,12 @@ class RouteMatcher
 
             foreach ($partsRoute as $keyPartRoute => $partRoute)
             {
-                if(preg_match('/\{.+\}/',$partRoute))
+                if(preg_match('/\{.+\}/',$partRoute) && isset($partsRequest[$keyPartRoute]))
                 {
                     $params[] = $partsRequest[$keyPartRoute];
                     $matches[] = true;
                 }
-                elseif ($partsRequest[$keyPartRoute] === $partRoute)
+                elseif (isset($partsRequest[$keyPartRoute]) && $partsRequest[$keyPartRoute] === $partRoute)
                 {
                     $matches[] = true;
                 }
@@ -49,6 +55,6 @@ class RouteMatcher
                 return $route;
             }
         }
-        return false;
+        throw new Exception('There are no matching routes in the routes.yml file with the current url');
     }
 }
