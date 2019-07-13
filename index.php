@@ -2,7 +2,7 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-use App\App;
+use App\Components\Container\ContainerDi;
 
-$request = new App;
+(new ContainerDi())->resolve('App\App');
 

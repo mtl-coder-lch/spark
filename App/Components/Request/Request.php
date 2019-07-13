@@ -130,4 +130,10 @@ class Request implements RequestInterface
     {
         return $this->cookies;
     }
+
+    public function getUriWithRemovedQueryString()
+    {
+        preg_match('/[A-Za-z0-9\/]+[^\?]/', $this->uri, $matches);
+        return $matches[0];
+    }
 }

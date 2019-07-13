@@ -2,14 +2,19 @@
 
 namespace App;
 
-use App\Components\Request\Request;
 use App\Components\Routing\Router;
 
 class App
 {
-    public function __construct()
+    private $router;
+
+    /**
+     * App constructor.
+     * @param Router $router
+     */
+    public function __construct(Router $router)
     {
-        $request = new Request();
-        $router = new Router($request);
+        $this->router = $router;
+        $this->router->init();
     }
 }
