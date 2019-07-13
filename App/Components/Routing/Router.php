@@ -31,6 +31,5 @@ class Router
         $data = $yamlReader->read(self::ROUTES_FILE_PATH);
         $routesParser = new RoutesParser();
         $routes = $routesParser->parse($data)->getRoutes();
-        var_dump($routes);
     }
 }
