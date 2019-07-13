@@ -3,13 +3,16 @@
 namespace App\Components\Routing;
 
 use App\Components\Request\Request;
-use App\Components\Reader\YamlReader;
 
 class Router
 {
     const ROUTES_FILE_PATH = __DIR__ . '/../../routes.yml';
 
-    private $request;
+    private $routes;
+    /**
+     * @var Route|bool|mixed
+     */
+    private $matchedRoute;
 
     /**
      * Router constructor.
@@ -18,19 +21,18 @@ class Router
      */
     public function __construct(Request $request)
     {
-        $this->request = $request;
-        $this->analyzeUri();
+        $routesParser = new RoutesParser($request);
+        $this->routes = $routesParser->parse()->getRoutes();
+        $this->matchedRoute = (new RouteMatcher())->resolve($this->routes, $request);
+        $this->executeController();
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function analyzeUri()
+    public function executeController()
     {
-        $yamlReader = new YamlReader();
-        $data = $yamlReader->read(self::ROUTES_FILE_PATH);
-        $routesParser = new RoutesParser();
-        $routes = $routesParser->parse($data)->getRoutes();
-        var_dump($routes);
+        $controllerName = $this->matchedRoute->getController().'Controller';
+        $namespace = 'App\\Components\\Controller\\';
+        $namespacedController = $namespace . $controllerName;
+        $action = $this->matchedRoute->getAction();
+        (new $namespacedController)->$action();
     }
 }

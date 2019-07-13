@@ -7,6 +7,10 @@ use App\Components\Routing\Router;
 
 class App
 {
+    /**
+     * App constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
         $request = new Request();

@@ -82,6 +82,6 @@ class YamlReader
 
     private function containsCharactersNotValid($line)
     {
-        return preg_match('/[^A-Za-z0-9:\s\/]/', $line);
+        return preg_match('/[^A-Za-z0-9:\s\/{}]/', $line);
     }
 }
