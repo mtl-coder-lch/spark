@@ -2,13 +2,12 @@
 
 namespace App;
 
-use App\Components\Request;
+use App\Components\Request\Request;
 
 class App
 {
     public function __construct()
     {
         $request = new Request();
-        var_dump($request->query->get('bla'));
     }
 }
