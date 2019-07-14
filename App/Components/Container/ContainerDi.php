@@ -5,7 +5,7 @@ namespace App\Components\Container;
 use ReflectionClass;
 use ReflectionException;
 
-class ContainerDi
+class ContainerDi implements ContainerInterface
 {
     private static $instances;
 
@@ -14,7 +14,7 @@ class ContainerDi
         return self::$instances[$key];
     }
 
-    public function list()
+    public static function getAll()
     {
         return self::$instances;
     }

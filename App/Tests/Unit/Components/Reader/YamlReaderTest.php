@@ -2,6 +2,8 @@
 
 namespace App\Tests\Unit\Components\Reader;
 
+use App\Components\Exception\CharactersNotValidException;
+use App\Components\Exception\FileNotValidException;
 use App\Components\Reader\YamlReader;
 use PHPUnit\Framework\TestCase;
 use Exception;
@@ -27,7 +29,7 @@ class YamlReaderTest extends TestCase
      */
     public function testThrowsExceptionWhenContainsSpecialCharacter()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(CharactersNotValidException::class);
         $yamlReader = new YamlReader();
         $yamlReader->read(self::FILE_NOT_VALID);
     }
@@ -37,7 +39,7 @@ class YamlReaderTest extends TestCase
      */
     public function testThrowsExceptionIfFileDoesNotExist()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(FileNotValidException::class);
         $yamlReader = new YamlReader();
         $yamlReader->read('any');
     }

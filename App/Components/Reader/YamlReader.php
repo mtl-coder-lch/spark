@@ -2,6 +2,8 @@
 
 namespace App\Components\Reader;
 
+use App\Components\Exception\CharactersNotValidException;
+use App\Components\Exception\FileNotValidException;
 use Exception;
 
 class YamlReader
@@ -21,7 +23,7 @@ class YamlReader
         }
         catch (Exception $e)
         {
-            throw new Exception("File $file is not valid");
+            throw new FileNotValidException("File $file is not valid");
         }
 
         $this->routes = [];
@@ -32,7 +34,8 @@ class YamlReader
 
             if($this->containsCharactersNotValid($content))
             {
-                throw new Exception('Special characters found in yaml file, please make sure all characters are valid');
+                throw new CharactersNotValidException('Special characters found in yaml file, please make sure
+                 all characters are valid');
             }
 
             if(!$this->onlyContainsSpaces($content))

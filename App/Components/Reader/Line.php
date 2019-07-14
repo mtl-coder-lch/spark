@@ -17,11 +17,13 @@ class Line
     }
 
     /**
-     * @param mixed $key
+     * @param $key
+     * @return $this
      */
-    public function setKey($key): void
+    public function setKey($key)
     {
         $this->key = $key;
+        return  $this;
     }
 
     /**
@@ -33,11 +35,13 @@ class Line
     }
 
     /**
-     * @param mixed $value
+     * @param $value
+     * @return $this
      */
-    public function setValue($value): void
+    public function setValue($value)
     {
         $this->value = $value;
+        return $this;
     }
 
     /**
@@ -49,10 +53,12 @@ class Line
     }
 
     /**
-     * @param mixed $numberOfSpaces
+     * @param $numberOfSpaces
+     * @return $this
      */
-    public function setNumberOfSpaces($numberOfSpaces): void
+    public function setNumberOfSpaces($numberOfSpaces)
     {
         $this->numberOfSpaces = $numberOfSpaces;
+        return $this;
     }
 }

@@ -5,6 +5,7 @@ namespace App;
 use App\Components\Controller\ControllerResolver;
 use App\Components\Request\Request;
 use App\Components\Routing\Router;
+use ReflectionException;
 
 class App
 {
@@ -26,6 +27,9 @@ class App
         $this->controllerResolver = $controllerResolver;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function init()
     {
         $this->matchedRoute = $this->router->getMatchedRoute();

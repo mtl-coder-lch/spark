@@ -26,12 +26,16 @@ class RoutesParser
     public function __construct(Request $request, YamlReader $yamlReader)
     {
         $this->request = $request;
-        $this->data = $yamlReader->read(self::ROUTES_FILE_PATH);
         $this->reader = $yamlReader;
     }
 
+    /**
+     * @return $this
+     * @throws Exception
+     */
     public function parse()
     {
+        $this->data = $this->reader->read(self::ROUTES_FILE_PATH);
         /**
          * @var $line Line
          */
@@ -40,13 +44,13 @@ class RoutesParser
             if($line->getNumberOfSpaces() == 2)
             {
                 $key = $line->getKey();
-                $this->routes[$key]['name'] = $key;
+                $this->routes[$key]['name'] = trim($key);
                 continue;
             }
 
             if(isset($key))
             {
-                $this->routes[$key][$line->getKey()] = $line->getValue();
+                $this->routes[$key][$line->getKey()] = trim($line->getValue());
             }
 
         }

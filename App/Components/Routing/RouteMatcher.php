@@ -3,6 +3,7 @@
 namespace App\Components\Routing;
 
 use App\Components\Collection\Collection;
+use App\Components\Exception\NoMatchingRouteException;
 use App\Components\Request\Request;
 use Exception;
 
@@ -55,6 +56,6 @@ class RouteMatcher
                 return $route;
             }
         }
-        throw new Exception('There are no matching routes in the routes.yml file with the current url');
+        throw new NoMatchingRouteException('There are no matching routes in the routes.yml file with the current url');
     }
 }
