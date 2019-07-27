@@ -1,7 +1,7 @@
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    root /home/www/spark;
+    root /srv/www;
 
     location / {
         # try to serve file directly, fallback to app.php
@@ -11,7 +11,6 @@ server {
     # This rule should only be placed on your development environment
     # In production, don't include this and don't deploy app_dev.php or config.php
     location ~ ^/(app_dev|config|index)\.php(/|$) {
-        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
         # When you are using symlinks to link the document root to the
@@ -26,7 +25,6 @@ server {
     }
     # PROD
     location ~ ^/app|index\.php(/|$) {
-        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
         # When you are using symlinks to link the document root to the

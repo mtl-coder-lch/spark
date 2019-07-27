@@ -1,37 +1,49 @@
-FROM debian:jessie
+FROM php:7.3-fpm
 
-# Set timezone
-RUN cp /usr/share/zoneinfo/Canada/Eastern /etc/localtime
+# Set working directory
+WORKDIR /var/www
 
-# Install app components
-RUN apt-get update -y --fix-missing
-RUN apt-get install -y software-properties-common python-software-properties
-RUN apt-get install -y apt-transport-https lsb-release ca-certificates wget
-RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-RUN echo "deb https://packages.sury.org/php/ jessie main" > /etc/apt/sources.list.d/php.list
-RUN apt-get update
-RUN apt-get install -y git curl nginx php7.3-cli php7.3-cgi php7.3-fpm php7.3-mysql php7.3-curl php7.3-mbstring zip unzip php7.3-zip php7.3-xml npm nano wget zsh fonts-powerline python-setuptools cron htop
-RUN easy_install supervisor
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    default-mysql-client \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libzip-dev
 
-# Install composer php package manager
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php
-RUN php -r "unlink('composer-setup.php');"
-RUN mv composer.phar /usr/local/bin/composer
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Change directory structure
-RUN rm -rf /var/www/*
-ADD . /home/www/spark
+# Install extensions
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
+RUN docker-php-ext-install gd
+RUN pecl install xdebug
 
-# Replace php.ini with a new one that has opcache set
-ADD php.ini /etc/php/7.3/cli/php.ini
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Add hosts to sites-available and create symlinks to sites-enabled
-ADD hosts/default /etc/nginx/sites-available
-ADD hosts/ /etc/nginx/sites-available
-RUN chown -R www-data:www-data /etc/nginx
-# Enable opcache
-RUN phpenmod opcache
+# Add user for laravel application
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
 
-# Both services must be executed at the same time or php-fm won't boot automatically after container creation
-CMD service php7.3-fpm start && nginx -g "daemon off;"
+# Copy existing application directory contents
+COPY . /var/www
+
+# Copy existing application directory permissions
+COPY --chown=www:www . /var/www
+
+# Change current user to www
+USER www
+
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
