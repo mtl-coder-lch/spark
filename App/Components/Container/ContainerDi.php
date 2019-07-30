@@ -19,6 +19,11 @@ class ContainerDi implements ContainerInterface
         return self::$instances;
     }
 
+    public static function set($className)
+    {
+        self::$instances[$className] = $className;
+    }
+
     /**
      * @param $className
      * @return object

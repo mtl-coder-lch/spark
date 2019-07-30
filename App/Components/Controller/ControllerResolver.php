@@ -6,13 +6,14 @@ use App\Components\Container\ContainerDi;
 use App\Components\Request\Request;
 use App\components\Routing\Route;
 use ReflectionClass;
+use ReflectionException;
 
 class ControllerResolver
 {
     /**
      * @param Route $matchedRoute
      * @param Request $request
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function resolve(Route $matchedRoute, Request $request)
     {
@@ -22,24 +23,60 @@ class ControllerResolver
         $action = $matchedRoute->getAction();
         $params = $request->getParams();
 
-        $class = new ReflectionClass($namespacedController);
+        $this->resolveControllerDependencies($namespacedController, $params, $action);
+    }
 
-        $parameters = $class->getConstructor()->getParameters();
+    /**
+     * @param $className
+     * @param $params
+     * @param $action
+     * @return object|void
+     * @throws ReflectionException
+     */
+    public function resolveControllerDependencies($className, $params, $action)
+    {
+        if(ContainerDi::get($className))
+        {
+            return ContainerDi::get($className);
+        }
+
+        $class =  new ReflectionClass($className);
+
+        $constructor = $class->getConstructor();
+
+        if(!$constructor || !$constructor->getParameters())
+        {
+            if(!ContainerDi::get($className))
+            {
+                return ContainerDi::set(new $className);
+            }
+            else
+            {
+                return ContainerDi::get($className);
+            }
+        }
+
+        $parameters = $constructor->getParameters();
 
         $instances = [];
 
         foreach ($parameters as $parameter)
         {
-            $instances[] = ContainerDi::get($parameter->getClass()->getName());
+            $instances[] = $this->resolveControllerDependencies($parameter->getClass()->getName(), $params, $action);
         }
 
-        if($params)
+        if($params && preg_match('/controller/i', $class->getNamespaceName()))
         {
-            $class->newInstanceArgs($instances)->$action(...$params);
+            return $class->newInstanceArgs($instances)->$action(...$params);
+        }
+        elseif (preg_match('/controller/i', $class->getNamespaceName()))
+        {
+
+            return $class->newInstanceArgs($instances)->$action();
         }
         else
         {
-            $class->newInstanceArgs($instances)->$action();
+            return $class->newInstanceArgs($instances);
         }
     }
 }
